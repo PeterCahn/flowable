@@ -1,0 +1,30 @@
+version: '3.6'
+services:
+    flowable:
+        image: pietrocannalire/flowable
+        container_name: flowable
+        depends_on:
+            - postgres
+        environment:
+            - SERVER_PORT=9977
+            - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/flowable
+            - SPRING_DATASOURCE_USERNAME=flowable
+            - SPRING_DATASOURCE_PASSWORD=flowable
+        ports:
+            - 8080:8080
+        volumes:
+            - ./tomcat-conf:/usr/local/tomcat/conf-provided
+        entrypoint: ["./wait-for-something.sh", "postgres", "5432", "PostgreSQL", "/usr/local/tomcat/bin/catalina.sh", "run"]
+    postgres:
+        image: postgres:9.6
+        container_name: postgres
+        environment:
+            - POSTGRES_PASSWORD=flowable
+            - POSTGRES_USER=flowable
+            - POSTGRES_DB=flowable
+        ports:
+            - 5432:5432
+        volumes:
+            - ./postgresql:/var/lib/postgresql/data
+        command: postgres
