@@ -19,12 +19,6 @@ RUN wget http://central.maven.org/maven2/org/postgresql/postgresql/${POSTGRESQL_
 # Volume where to add personal information about Tomcat and trust stores
 VOLUME ["${CATALINA_HOME}/conf-provided"]
 
-#RUN mv conf-provided/server.xml conf/server.xml && \
-#    mv conf-provided/tomcat-users.xml > conf/tomcat-users.xml
-
-#ADD tomcat-conf/server.xml conf/server.xml
-#ADD tomcat-conf/tomcat-users.xml conf/tomcat-users.xml
-
 ENV JAVA_OPTS="-Xms1024M -Xmx1024M -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Europe/Rome"
 
 EXPOSE 8080

@@ -15,7 +15,7 @@ done
 >&2 echo "$description is up - executing command"
 
 # Replacing Tomcat custom configuration from volume
-mv conf-provided/server.xml conf/server.xml
-mv conf-provided/tomcat-users.xml conf/tomcat-users.xml
+cp -f conf-provided/server.xml conf/server.xml
+cp -f conf-provided/tomcat-users.xml conf/tomcat-users.xml
 
 exec $cmd
