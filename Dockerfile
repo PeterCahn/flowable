@@ -7,12 +7,18 @@ RUN wget https://github.com/flowable/flowable-engine/releases/download/flowable-
     cd /tmp && unzip -q flowable-${FLOWABLE_VERSION}.zip && cp -Rv /tmp/flowable-${FLOWABLE_VERSION}/wars/* ${CATALINA_HOME}/webapps && rm -Rf /tmp/flowable* && \
     apt-get update && apt-get install -y netcat vim && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Add FreeIPA client (custom requirement)
+RUN echo "deb http://httpredir.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive; apt-get install --no-install-recommends -y freeipa-client && \
+    apt-get clean &&  rm -rf /var/lib/apt/lists/* /var/tmp && \
+    sed -i '/deb http:\/\/httpredir.debian.org\/debian\/ sid main/d' /etc/apt/sources.list
+
 WORKDIR ${CATALINA_HOME}
 
 # Add PostgreSQL JDBC Driver to Tomcat
 ENV POSTGRESQL_DRIVER_VERSION=9.4.1212 
 RUN wget http://central.maven.org/maven2/org/postgresql/postgresql/${POSTGRESQL_DRIVER_VERSION}/postgresql-${POSTGRESQL_DRIVER_VERSION}.jar -O lib/postgresql-${POSTGRESQL_DRIVER_VERSION}.jar
-
 
 ADD wait-for-something.sh .
 RUN chmod +x ${CATALINA_HOME}/wait-for-something.sh
