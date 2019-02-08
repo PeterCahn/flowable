@@ -1,7 +1,7 @@
 version: '3.6'
 services:
     flowable:
-        image: pietrocannalire/flowable
+        image: pietrocannalire/flowable:6.4.1-ipa
         container_name: flowable
         depends_on:
             - postgres

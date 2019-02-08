@@ -28,10 +28,16 @@ if [ -f $CATALINA_HOME/conf-provided/manager.xml ] ; then
 	cp -f $CATALINA_HOME/conf-provided/manager.xml $CATALINA_HOME/conf/Catalina/localhost
 fi
 	
-# Adding provided truststore to JVM truststore
+# Add provided truststore to JVM truststore
 if [ -f $CATALINA_HOME/conf-provided/flowable.ts ] ; then
     echo "Adding provided truststore to JVM trustore..."
     keytool -noprompt -importkeystore -srckeystore $CATALINA_HOME/conf-provided/flowable.ts -destkeystore $JAVA_HOME/lib/security/cacerts -srcstorepass mypass -deststorepass changeit
+fi
+
+# Add provided crt and conf for connecting to KDC
+if [ -f $CATALINA_HOME/conf-provided/freeipa/ca.crt -a -f $CATALINA_HOME/conf-provided/freeipa/krb5.conf ] ; then
+	cp $CATALINA_HOME/conf-provided/freeipa/ca.crt /etc/ipa
+	cp $CATALINA_HOME/conf-provided/freeipa/krb5.conf /etc/
 fi
 
 exec $cmd
