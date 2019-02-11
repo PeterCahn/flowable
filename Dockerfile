@@ -10,7 +10,7 @@ RUN wget https://github.com/flowable/flowable-engine/releases/download/flowable-
 # Add FreeIPA client (custom requirement)
 RUN echo "deb http://httpredir.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
     apt-get update && \
-    DEBIAN_FRONTEND=noninteractive; apt-get install --no-install-recommends -y freeipa-client openssh-server openssh-clients && \
+    DEBIAN_FRONTEND=noninteractive; apt-get install --no-install-recommends -y freeipa-client openssh-client && \
     apt-get clean &&  rm -rf /var/lib/apt/lists/* /var/tmp && \
     sed -i '/deb http:\/\/httpredir.debian.org\/debian\/ sid main/d' /etc/apt/sources.list
 	

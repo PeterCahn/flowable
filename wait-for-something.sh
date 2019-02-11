@@ -14,7 +14,7 @@ done
 
 >&2 echo "$description is up - executing command"
 
-# Replacing Tomcat custom configuration
+# Replacing Tomcat custom configuration from volume
 if [ -f $CATALINA_HOME/conf-provided/server.xml ] ; then
 	cp -f $CATALINA_HOME/conf-provided/server.xml $CATALINA_HOME/conf/server.xml
 fi
