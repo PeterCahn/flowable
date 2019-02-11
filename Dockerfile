@@ -14,21 +14,6 @@ RUN echo "deb http://httpredir.debian.org/debian/ sid main" >> /etc/apt/sources.
     apt-get clean &&  rm -rf /var/lib/apt/lists/* /var/tmp && \
     sed -i '/deb http:\/\/httpredir.debian.org\/debian\/ sid main/d' /etc/apt/sources.list
 	
-# Run SSH service: https://docs.docker.com/engine/examples/running_ssh_service/
-# overwrite with a personal pw
-ENV ZEPPELINUSER_PASSWORD=my-pass 
-ENV NOTVISIBLE="in users profile"
-RUN useradd zeppelin && \
-	echo $ZEPPELINUSER_PASSWORD | passwd zeppelin --stdin && \
-	chown zeppelin:zeppelin /etc/security/keytabs && \
-	mkdir /var/run/sshd && \
-	echo "zeppelin:$ZEPPELINUSER_PASSWORD" | chpasswd && \
-	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-	sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
-	echo "export VISIBLE=now" >> /etc/profile && \
-	/usr/bin/ssh-keygen -A && \
-	/usr/sbin/sshd
-	
 WORKDIR ${CATALINA_HOME}
 
 # Add PostgreSQL JDBC Driver to Tomcat
