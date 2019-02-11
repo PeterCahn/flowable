@@ -15,7 +15,9 @@ RUN echo "deb http://httpredir.debian.org/debian/ sid main" >> /etc/apt/sources.
     sed -i '/deb http:\/\/httpredir.debian.org\/debian\/ sid main/d' /etc/apt/sources.list
 	
 # Run SSH service: https://docs.docker.com/engine/examples/running_ssh_service/
-ENV ZEPPELINUSER_PASSWORD=my-pass # overwrite with a personal pw
+# overwrite with a personal pw
+ENV ZEPPELINUSER_PASSWORD=my-pass 
+ENV NOTVISIBLE="in users profile"
 RUN useradd zeppelin && \
 	echo $ZEPPELINUSER_PASSWORD | passwd zeppelin --stdin && \
 	chown zeppelin:zeppelin /etc/security/keytabs && \
@@ -23,7 +25,6 @@ RUN useradd zeppelin && \
 	echo "zeppelin:$ZEPPELINUSER_PASSWORD" | chpasswd && \
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
 	sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
-	export NOTVISIBLE="in users profile" && \
 	echo "export VISIBLE=now" >> /etc/profile && \
 	/usr/bin/ssh-keygen -A && \
 	/usr/sbin/sshd
