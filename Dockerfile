@@ -10,10 +10,24 @@ RUN wget https://github.com/flowable/flowable-engine/releases/download/flowable-
 # Add FreeIPA client (custom requirement)
 RUN echo "deb http://httpredir.debian.org/debian/ sid main" >> /etc/apt/sources.list && \
     apt-get update && \
-    DEBIAN_FRONTEND=noninteractive; apt-get install --no-install-recommends -y freeipa-client openssh-client && \
+    DEBIAN_FRONTEND=noninteractive; apt-get install --no-install-recommends -y freeipa-client openssh-server openssh-clients && \
     apt-get clean &&  rm -rf /var/lib/apt/lists/* /var/tmp && \
     sed -i '/deb http:\/\/httpredir.debian.org\/debian\/ sid main/d' /etc/apt/sources.list
-
+	
+# Run SSH service: https://docs.docker.com/engine/examples/running_ssh_service/
+ENV ZEPPELINUSER_PASSWORD=my-pass # overwrite with a personal pw
+RUN useradd zeppelin && \
+	echo $ZEPPELINUSER_PASSWORD | passwd zeppelin --stdin && \
+	chown zeppelin:zeppelin /etc/security/keytabs && \
+	mkdir /var/run/sshd && \
+	echo "zeppelin:$ZEPPELINUSER_PASSWORD" | chpasswd && \
+	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+	sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
+	export NOTVISIBLE="in users profile" && \
+	echo "export VISIBLE=now" >> /etc/profile && \
+	/usr/bin/ssh-keygen -A && \
+	/usr/sbin/sshd
+	
 WORKDIR ${CATALINA_HOME}
 
 # Add PostgreSQL JDBC Driver to Tomcat
