@@ -41,11 +41,13 @@ if [ -f $CATALINA_HOME/conf-provided/freeipa/ca.crt -a -f $CATALINA_HOME/conf-pr
 fi
 
 # Replace flowable-idm url
-if [ -n "$FLOWABLE_IDM_HOSTNAME" ] ; then
-    if [ -z "$FLOWABLE_IDM_PORT" ] ; then
-		FLOWABLE_IDM_PORT=8080
-	fi
-	sed -i 's/flowable.common.app.idm-url=.*/flowable.common.app.idm-url=http:\/\/'$FLOWABLE_IDM_HOSTNAME':'$FLOWABLE_IDM_PORT'\/flowable-idm/' $(find $CATALINA_HOME/webapps/flowable-*/WEB-INF/classes/ -name flowable-default.properties)
+if [ -n "$FLOWABLE_HOSTNAME" ] ; then
+    if [ -z "$FLOWABLE_PORT" ] ; then
+                FLOWABLE_IDM_PORT=8080
+        fi
+
+	cp $CATALINA_HOME/conf-provided/flowable-apps/* $CATALINA_HOME/conf/Catalina/localhost/
+	sed -i 's/flowable.common.app.idm-url=.*/flowable.common.app.idm-url=http:\/\/'$FLOWABLE_HOSTNAME':'$FLOWABLE_PORT'\/flowable-idm/' $CATALINA_HOME/conf/Catalina/localhost/*.properties
 fi
 
 exec $cmd

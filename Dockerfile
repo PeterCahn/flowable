@@ -30,4 +30,4 @@ ENV JAVA_OPTS="-Xms1024M -Xmx1024M -Djava.security.egd=file:/dev/./urandom -Duse
 
 EXPOSE 8080
 
-CMD ["bin/catalina.sh", "run""]
+CMD ["bin/catalina.sh", "run" ]
