@@ -40,4 +40,12 @@ if [ -f $CATALINA_HOME/conf-provided/freeipa/ca.crt -a -f $CATALINA_HOME/conf-pr
 	cp $CATALINA_HOME/conf-provided/freeipa/krb5.conf /etc/
 fi
 
+# Replace flowable-idm url
+if [ -n "$FLOWABLE_IDM_HOSTNAME" ] ; then
+    if [ -z "$FLOWABLE_IDM_PORT" ] ; then
+		FLOWABLE_IDM_PORT=8080
+	fi
+	sed -i 's/flowable.common.app.idm-url=.*/flowable.common.app.idm-url=http:\/\/'$FLOWABLE_IDM_HOSTNAME':'$FLOWABLE_IDM_PORT'\/flowable-idm/' $CATALINA_HOME/webapps/flowable-*/WEB-INF/classes/flowable-default.properties
+fi
+
 exec $cmd
